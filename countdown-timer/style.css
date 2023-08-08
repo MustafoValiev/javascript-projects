@@ -58,6 +58,7 @@ body {
     text-align: center;
     flex-direction: column;
     font-size: 4rem;
+    word-break: break-word;
 }
 
 .time span {
