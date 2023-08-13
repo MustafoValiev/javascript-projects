@@ -30,7 +30,7 @@ function generateMeal(i) {
             let span = document.createElement("span")
             div.classList.add("meal-icon")
             div.id = `divList${count++}`
-            span.innerHTML = "❤️"
+            span.innerHTML = "&#9829"; // empty -> &#9753;
             span.id = "fav"
             for (let j = 0; j < count; j++) {
                 img.setAttribute("src", `${listImgMeal[i]}`)
