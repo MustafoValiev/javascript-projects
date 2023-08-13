@@ -40,7 +40,6 @@ let currentQuestion = 0;
 let quizWrapper = document.getElementById("quiz-wrapper")
 let quizWrapperQuestion = document.querySelector("#quiz-wrapper h2")
 let button = document.getElementById("button")
-let row = document.getElementsByTagName("input")
 let answers = []
 
 loadQuizQuestion();
@@ -106,4 +105,3 @@ button.addEventListener("click", () => {
     }
 
 })
-
