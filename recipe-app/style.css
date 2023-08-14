@@ -7,6 +7,10 @@
     transition: all 0.25s;
 }
 
+*:hover {
+    transition: all 0.1s;
+}
+
 :root {
     font-size: 16px;
 }
@@ -51,6 +55,12 @@ i {
 }
 
 header {
+    width: 100%;
+    border-bottom: 1px solid #0d498f;
+    padding-bottom: 1rem;
+}
+
+.header {
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -58,6 +68,7 @@ header {
     background: -webkit-linear-gradient(#3960d0, #3960d0);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    border-bottom: black;
 }
 
 header h1 {
@@ -68,7 +79,7 @@ header h1 {
 
 aside {
     position: absolute;
-    transform: translate(calc(-100% - 2.5rem), 3rem);
+    transform: translate(calc(-100% - 2.5rem), 4rem);
     clip-path: polygon(calc(100% + 1px) 0%, 200% 0%, 200% 100%, calc(100% + 1px) 100%);
     display: flex;
     flex-direction: column;
@@ -78,35 +89,35 @@ aside {
 }
 
 aside > div{
-    min-width: 17.5rem;
-    max-height: 30rem;
+    min-width: 35rem;
+    height: calc(90vh - 6rem);
     overflow-y: auto;
     background-image: linear-gradient(180deg, #caefe7 0%, #f0ffff 74%);
     padding: 0 1rem 1rem;
 }
 
-
 .fav-title {
-    width: 17.5rem;
+    width: 100%;
     height: 3rem;
 }
 
 .fav-title h2 {
-    background: linear-gradient(0deg, rgba(108, 190, 161, 0.7) 0%, transparent);
-    -webkit-text-fill-color: #3960d0;
+    background: linear-gradient(0deg, rgba(43, 222, 159, 0.8) 45%, transparent 100%);
+    -webkit-text-fill-color: #002dac;
     display: flex;
-    padding: 1.2rem 0.2rem 0.7rem 1rem;
+    padding: 1.2rem 1rem 0.7rem;
     position: fixed;
     backdrop-filter: blur(3px);
-    width: 100%;
     transform: translateX(-1rem);
     border-bottom: 0.01rem solid;
     border-image-slice: 1;
     border-image-source: linear-gradient(to left, #0d498f, #00346c);
+    justify-content: center;
+    z-index: 5;
 }
 
 .width-changer {
-    width: calc(100% - 0.64rem) !important;
+    width: calc(100% - 0.62rem) !important;
 }
 
 #fav-ul {
@@ -119,12 +130,48 @@ aside > div{
 #fav-ul li {
     border: 0.05rem solid #3960d0;
     border-radius: 0.5rem;
-    padding: 1.2rem;
+    padding: 1.2rem 0.5rem;
     list-style: none;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    justify-content: space-evenly;
 }
 
-#fav-ul img {
-    width: 5rem;
+#fav-ul li:first-child {
+    display: flex;
+    align-items: center;
+}
+
+.img-icon {
+    width: 8rem;
+    border-radius: 1rem;
+}
+
+.img-icon:hover {
+    border: 0.1rem solid #3960d0;
+    scale: 1.05;
+    cursor: pointer;
+}
+
+.fav-li {
+    width: 50%;
+    padding: 0.5rem 1rem;
+}
+
+.fav-li p, h3 {
+    background: #0d498f;
+    -webkit-background-clip: text;
+    width: fit-content;
+    margin: 0;
+}
+
+#title-h3 {
+    background: #0080ff;
+    font-size: 1.3rem;
+    -webkit-background-clip: text;
+    margin-bottom: 0.5rem;
+    line-height: 1.4rem;
 }
 
 .list-slide {
@@ -176,7 +223,6 @@ aside > div{
     margin-left: 5rem;
     border: 0.05rem solid red;
     border-radius: 50%;
-    padding: 0.1rem;
     background: #fff;
     cursor: pointer;
     width: 1.5rem;
@@ -185,7 +231,7 @@ aside > div{
     justify-content: center;
     align-items: center;
     color: red;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
 }
 
 #fav:hover {
@@ -352,39 +398,39 @@ strong {
 }
 
 .slide-in {
-    animation: slide-in 0.5s forwards;
+    animation: slide-in 0.35s forwards;
 }
 
 .slide-out {
-    animation: slide-out 0.5s forwards;
+    animation: slide-out 0.35s forwards;
 }
 
 .rotate-in {
-    animation: rotate-in 0.5s forwards;
+    animation: rotate-in 0.35s forwards;
 }
 
 .rotate-out {
-    animation: rotate-out 0.5s forwards;
+    animation: rotate-out 0.35s forwards;
 }
 
 @keyframes slide-out {
     from {
-        transform: translate(-2.5rem, 3rem);
+        transform: translate(-2.5rem, 4rem);
         clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
     }
     to {
-        transform: translate(calc(-100% - 2.5rem), 3rem);
+        transform: translate(calc(-100% - 2.5rem), 4rem);
         clip-path: polygon(calc(100% + 1px) 0%, 200% 0%, 200% 100%, calc(100% + 1px) 100%);
     }
 }
 
 @keyframes slide-in {
     from {
-        transform: translate(calc(-100% - 2.5rem), 3rem);
+        transform: translate(calc(-100% - 2.5rem), 4rem);
         clip-path: polygon(calc(100% + 1px) 0%, 200% 0%, 200% 100%, calc(100% + 1px) 100%);
     }
     to {
-        transform: translate(-2.5rem, 3rem);
+        transform: translate(-2.5rem, 4rem);
         clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
     }
 }
