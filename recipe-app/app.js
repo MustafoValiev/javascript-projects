@@ -3,6 +3,8 @@ let container = document.getElementById("list-slide-container")
 let wrapper = document.getElementById("list-slide-wrapper")
 let mainContainer = document.getElementById("container")
 let favListElement = document.getElementsByTagName("aside")[0]
+let favUl = document.getElementById("fav-ul")
+let favListElementH2 = document.querySelector(".fav-title h2")
 let listImgMeal = []
 let listMeal = []
 let count = 0
@@ -11,13 +13,14 @@ let favArrayID;
 
 // localStorage.clear()
 
+
 window.onload = () => {
     for (let i = 0; i < slideContainerWidth / 116; i++) {
         generateMeal(i)
     }
     favArrayID = showFavMealsID() ? showFavMealsID().split(",") : []
-    console.log(favArrayID)
 }
+
 
 function generateMeal(i) {
     fetch('https://www.themealdb.com/api/json/v1/1/random.php')
@@ -40,7 +43,6 @@ function generateMeal(i) {
                 div.append(img)
                 container.append(div)
             }
-            // if ()
         })
         .catch(e => {
             console.warn(e);
@@ -48,39 +50,72 @@ function generateMeal(i) {
 }
 
 window.onclick = e => {
-    if (e.target.id === "fav") {
+    let isOpen = favListElement.classList.contains('slide-in');
+    let el = e.target
+    if (el.id === "fav") {
         let str = e.target.parentElement.id
         let favMeal = listMeal[str.charAt(str.length - 1)]
         if (!favArrayID.includes(favMeal.idMeal)) {
             favArrayID.push(favMeal.idMeal)
             saveFavMealsID()
-            let favUl = document.getElementById("fav-ul")
-            let li = document.createElement("LI")
-            li.innerHTML = `
-            <img src="${favMeal.strMealThumb}" alt="Meal Image" id="img-icon">
-            <h3>${favMeal.strMeal}</h3>
-            `
-            favUl.appendChild(li)
         }
     }
-    if (e.target.classList.contains("fa-bars")) {
-        e.target.addEventListener('click', function () {
-            let isOpen = favListElement.classList.contains('slide-in');
+    if (el.classList.contains("fa-bars")) {
+        el.addEventListener('click', function () {
             favListElement.setAttribute('class', isOpen ? 'slide-out' : 'slide-in');
-            e.target.parentElement.setAttribute('class', isOpen ? 'rotate-out' : 'rotate-in');
+            el.parentElement.setAttribute('class', isOpen ? 'rotate-out' : 'rotate-in');
         });
+        if (isOpen) {
+           generateFavList()
+        } else {
+            removeLi()
+        }
     }
     let spanCross = document.getElementById("span-cross");
-
-    if (e.target === spanCross) {
+    if (el === spanCross || el.parentElement.classList.contains("rotate-out")) {
         mealContainer.innerHTML = ''
         mealContainer.style.opacity = "0"
         container.style.filter = "none"
         container.style.pointerEvents = "initial"
         container.style.userSelect = "initial"
-    } else if (e.target.classList.contains("image")) {
+    } else if (el.classList.contains("image") || (el.parentElement.classList.contains("rotate-in") && el.classList.contains("fa-bars"))) {
         container.style.pointerEvents = "none"
         container.style.userSelect = "none"
+        container.style.filter = "blur(3px)";
+    }
+}
+
+function generateFavList() {
+    favArrayID.forEach((mealID) => {
+        fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealID}`)
+            .then(res => res.json())
+            .then(data => {
+                setTimeout(addLi(data.meals[0]),1)
+            })
+            .catch(e => {
+                console.warn(e);
+            })
+    })
+}
+
+function addLi(meal) {
+    let li;
+    li = document.createElement("LI")
+    li.innerHTML = `
+            <img src="${meal.strMealThumb}" alt="Meal Image" id="img-icon">
+            <h3>${meal.strMeal}</h3>
+            `
+    favUl.append(li)
+    if (favUl.children.length >= 3) {
+        favListElementH2.classList.add("width-changer")
+    } else {
+        favListElementH2.classList.remove("width-changer")
+    }
+}
+
+function removeLi() {
+    while (favUl.firstChild) {
+        favUl.removeChild(favUl.firstChild)
     }
 }
 
@@ -180,7 +215,6 @@ const createMeal = meal => {
     `;
     mealContainer.innerHTML = newInnerHTML;
     mealContainer.style.opacity = "1"
-    container.style.filter = "blur(3px)";
 };
 
 function saveFavMealsID() {
@@ -190,3 +224,4 @@ function saveFavMealsID() {
 function showFavMealsID() {
     return localStorage.getItem("favMealsID")
 }
+
