@@ -8,14 +8,14 @@ let favListElementH2 = document.querySelector(".fav-title h2")
 let listImgMeal = []
 let listMeal = []
 let count = 0
-let slideContainerWidth = mainContainer.offsetWidth - 116
+let slideContainerWidth = mainContainer.offsetWidth - 132
 let favArrayID;
 
 // localStorage.clear()
 
 
 window.onload = () => {
-    for (let i = 0; i < slideContainerWidth / 116; i++) {
+    for (let i = 0; i < slideContainerWidth / 132; i++) {
         generateMeal(i)
     }
     favArrayID = showFavMealsID() ? showFavMealsID().split(",") : []

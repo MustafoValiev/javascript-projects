@@ -148,9 +148,9 @@ aside > div{
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     position: absolute;
-    margin-top: -3.5rem;
+    margin-top: -4rem;
     left: 50%;
-    margin-left: -2.5rem;
+    margin-left: -3.3rem;
 }
 
 .meal-icon {
@@ -158,10 +158,11 @@ aside > div{
 }
 
 .image {
-    width: 4.5rem;
+    width: 100px;
     aspect-ratio: 1;
     border-radius: 50%;
     border: 0.15rem solid #3fb8af;
+    cursor: pointer;
 }
 
 .image:hover {
@@ -219,14 +220,8 @@ li {
 
 #list-slide-container {
     display: flex;
-    gap: 1rem;
+    gap: 2rem;
     padding: 0 1rem 1rem;
-}
-
-#list-slide-container div img {
-    width: 100px;
-    aspect-ratio: 1;
-    cursor: pointer;
 }
 
 #container {
