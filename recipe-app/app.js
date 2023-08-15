@@ -1,16 +1,16 @@
 let mealContainer = document.getElementById("meal");
 let listSlideContainer = document.getElementById("list-slide-container")
 let listSlideH2 = document.getElementById("list-slide-h2")
-let wrapper = document.getElementById("list-slide-wrapper")
+let headerH1 = document.querySelector(".header h1")
 let mainContainer = document.getElementById("container")
 let favListElement = document.getElementsByTagName("aside")[0]
 let favUl = document.getElementById("fav-ul")
 let favListElementH2 = document.querySelector(".fav-title h2")
-let listImgMeal = []
 let listMeal = []
 let count = 0
 let slideContainerWidth = mainContainer.offsetWidth - 132
 let favArrayID;
+let favButton;
 
 // localStorage.clear()
 
@@ -31,6 +31,13 @@ window.onclick = e => {
             favArrayID.push(favMeal.idMeal)
             saveFavMealsID()
         }
+        if (favButton) {
+            el.innerHTML = "&#9825" // empty -> &#9825; full -> &#9829
+            favButton = false
+        } else {
+            el.innerHTML = "&#9829"
+            favButton = true
+        }
     }
     if (el.classList.contains("fa-bars")) {
         if (isOpen) {
@@ -41,6 +48,7 @@ window.onclick = e => {
         el.addEventListener('click', function () {
             favListElement.setAttribute('class', isOpen ? 'slide-out' : 'slide-in');
             el.parentElement.setAttribute('class', isOpen ? 'rotate-out' : 'rotate-in');
+            isOpen ? headerH1.classList.remove("change-position-h1") : headerH1.classList.add("change-position-h1");
         });
     }
     let spanCross = document.getElementById("span-cross");
@@ -88,23 +96,23 @@ function generateMeal(i) {
     fetch('https://www.themealdb.com/api/json/v1/1/random.php')
         .then(res => res.json())
         .then(res => {
-            createListImgMeal(res.meals[0]);
             listMeal.push(res.meals[0])
             let div = document.createElement("div")
             let img = document.createElement("img")
             let span = document.createElement("span")
             div.classList.add("meal-icon")
             div.id = `divList${count++}`
-            span.innerHTML = "&#9829"; // empty -> &#9753;
-            span.id = "fav"
+            span.innerHTML = "&#9825"; // empty -> &#9825; full -> &#9829
+            span.id = "fav" //
             for (let j = 0; j < count; j++) {
-                img.setAttribute("src", `${listImgMeal[i]}`)
-                img.setAttribute("alt", "Meal")
+                img.setAttribute("src", `${res.meals[0].strMealThumb}`)
+                img.setAttribute("alt", 'Meal')
                 img.classList.add("image")
                 div.append(span)
                 div.append(img)
                 listSlideContainer.append(div)
             }
+            span.setAttribute("onclick", `favIconAni(${span.parentElement.id.charAt(span.parentElement.id.length - 1)})`)
         })
         .catch(e => {
             console.warn(e);
@@ -166,10 +174,6 @@ function toDefault() {
     listSlideH2.style.filter = "none"
     listSlideH2.style.pointerEvents = "initial"
     listSlideH2.style.userSelect = "initial"
-}
-
-function createListImgMeal(meal) {
-    listImgMeal.push(meal.strMealThumb)
 }
 
 function createMeal(meal) {
@@ -245,3 +249,9 @@ function showFavMealsID() {
     return localStorage.getItem("favMealsID")
 }
 
+function favIconAni(id) {
+    document.querySelector( `#divList${id} #fav`).classList.add("fav-icon-ani-class")
+    setTimeout(() => {
+        document.querySelector( `#divList${id} #fav`).classList.remove("fav-icon-ani-class")
+    }, 150)
+}
