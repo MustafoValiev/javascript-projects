@@ -7,7 +7,6 @@ let favListElement = document.getElementsByTagName("aside")[0]
 let favUl = document.getElementById("fav-ul")
 let favListElementH2 = document.querySelector(".fav-title h2")
 let listMeal = []
-let count = 0
 let slideContainerWidth = mainContainer.offsetWidth - 132
 let favArrayID;
 let favButton;
@@ -15,10 +14,9 @@ let favButton;
 // localStorage.clear()
 
 window.onload = () => {
-    for (let i = 0; i < slideContainerWidth / 132; i++) {
-        generateMeal(i)
-    }
+    generateMeal()
     favArrayID = showFavMealsID() ? showFavMealsID().split(",") : []
+    console.log(favArrayID)
 }
 
 window.onclick = e => {
@@ -41,9 +39,24 @@ window.onclick = e => {
     }
     if (el.classList.contains("fa-bars")) {
         if (isOpen) {
-            generateFavList()
+            let urls = []
+            favArrayID.forEach((mealID) => {
+                urls.push(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealID}`)
+            })
+            Promise.all(urls.map(u => fetch(u))).then(responses =>
+                Promise.all(responses.map(res => res.json()))
+            ).then(data => {
+                data.forEach((meal) => {
+                    if (favArrayID.length <= favUl.children.length) {
+                        return 0
+                    }
+                    addLi(meal.meals[0])
+                })
+            }).catch(e => {
+                console.warn(e);
+            })
         } else {
-            removeLi()
+            removeUl()
         }
         el.addEventListener('click', function () {
             favListElement.setAttribute('class', isOpen ? 'slide-out' : 'slide-in');
@@ -52,26 +65,65 @@ window.onclick = e => {
         });
     }
     let spanCross = document.getElementById("span-cross");
-    if (el === spanCross || el.parentElement.classList.contains("rotate-out")) {
-        toDefault();
-    } else if (el.classList.contains("image") || (el.parentElement.classList.contains("rotate-in") && el.classList.contains("fa-bars"))) {
-        listSlideContainer.style.pointerEvents = "none"
-        listSlideContainer.style.userSelect = "none"
-        listSlideContainer.style.filter = "blur(3px)";
-        listSlideH2.style.pointerEvents = "none"
-        listSlideH2.style.userSelect = "none"
-        listSlideH2.style.filter = "blur(3px)"
+    if (el === spanCross) {
+        closeMeal()
     }
+    // console.log(isOpen)
+    // if (isOpen) {
+    //     makeUnClickable(listSlideContainer)
+    //     makeUnClickable(listSlideH2)
+    // } else if (el.classList.contains("image") || el.classList.contains("img-icon")) {
+    //     makeUnClickable(listSlideContainer)
+    //     makeUnClickable(listSlideH2)
+    //     makeUnClickable(favListElement)
+    // } else if (!isOpen && (el === spanCross)) {
+    //     toDefault()
+    // } else if (isOpen && (el === spanCross)) {
+    //     toDefault()
+    //     makeUnClickable(listSlideContainer)
+    //     makeUnClickable(listSlideH2)
+    // }
+    // -------------------------------
+    // if (el === spanCross || el.parentElement.classList.contains("rotate-out") || el.parentElement.classList.contains("rotate-in")) {
+    //     if (el.parentElement.classList.contains("rotate-in")){
+    //         makeUnClickable(listSlideContainer)
+    //         makeUnClickable(listSlideH2)
+    //     }
+    //     else if (el === spanCross && isOpen){
+    //         makeUnClickable(listSlideContainer)
+    //         makeUnClickable(listSlideH2)
+    //     }
+    //     else {
+    //         toDefault();
+    //     }
+    // } else if (el.classList.contains("image") || (isOpen && el.classList.contains("fa-bars"))) {
+    //     makeUnClickable(listSlideContainer)
+    //     makeUnClickable(listSlideH2)
+    //     makeUnClickable(favListElement)
+    // } else if (el.classList.contains("img-icon")) {
+    //     let background = document.querySelectorAll("#list-slide-h2, #list-slide-container, aside")
+    //     console.log(background)
+    //     background.forEach((el) => {
+    //         makeUnClickable(el)
+    //     })
+    // }
+    //
     let img;
-    if (e.target.classList.contains("image")) {
-        img = e.target
+    if (el.classList.contains("image")) {
+        img = el
         let str = img.parentElement.id
         createMeal(listMeal[str.charAt(str.length - 1)])
-        let youtubeDiv = document.getElementsByClassName("video-div")
-        if (youtubeDiv.length === 0) {
-            let descrp = document.querySelector(".description p")
-            descrp.style.maxHeight = "24rem"
-        }
+    }
+    if (el.classList.contains("img-icon")) {
+        let id = el.id
+        fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`)
+            .then(res => res.json())
+            .then(data => {
+                createMeal(data.meals[0])
+            })
+            .catch(e => {
+                console.warn(e)
+            })
     }
 }
 
@@ -79,44 +131,67 @@ window.onkeydown = e => {
     closeEvent(e)
 }
 
-function generateFavList() {
-    favArrayID.forEach((mealID) => {
-        fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealID}`)
-            .then(res => res.json())
-            .then(data => {
-                setTimeout(addLi(data.meals[0]), 1)
-            })
-            .catch(e => {
-                console.warn(e);
-            })
-    })
+function makeUnClickable(el) {
+    el.style.pointerEvents = "none"
+    el.style.userSelect = "none"
+    el.style.filter = "blur(3px)"
 }
 
-function generateMeal(i) {
-    fetch('https://www.themealdb.com/api/json/v1/1/random.php')
-        .then(res => res.json())
-        .then(res => {
-            listMeal.push(res.meals[0])
-            let div = document.createElement("div")
+function closeEvent(e) {
+    if (e.key === "Escape") {
+        toDefault(e)
+    }
+}
+
+function closeMeal() {
+    mealContainer.innerHTML = ''
+    mealContainer.style.opacity = "0"
+    document.getElementById("menu").style.pointerEvents = "initial"
+    document.getElementById("menu").style.userSelect = "initial"
+}
+
+function toDefault(e) {
+    listSlideContainer.style.filter = "none"
+    listSlideContainer.style.pointerEvents = "initial"
+    listSlideContainer.style.userSelect = "initial"
+    listSlideH2.style.filter = "none"
+    listSlideH2.style.pointerEvents = "initial"
+    listSlideH2.style.userSelect = "initial"
+
+    favListElement.style.filter = "none"
+    favListElement.style.pointerEvents = "initial"
+    favListElement.style.userSelect = "initial"
+}
+
+function generateMeal() {
+    let count = 0
+    let urls = []
+    for (let i = 0; i < slideContainerWidth / 132; i++) {
+        urls.push('https://www.themealdb.com/api/json/v1/1/random.php')
+    }
+    Promise.all(urls.map(u => fetch(u))).then(responses =>
+        Promise.all(responses.map(res => res.json()))
+    ).then(data => {
+        data.forEach((meal) => {
+            listMeal.push(meal.meals[0])
             let img = document.createElement("img")
             let span = document.createElement("span")
+            let div = document.createElement("div")
             div.classList.add("meal-icon")
             div.id = `divList${count++}`
             span.innerHTML = "&#9825"; // empty -> &#9825; full -> &#9829
             span.id = "fav" //
-            for (let j = 0; j < count; j++) {
-                img.setAttribute("src", `${res.meals[0].strMealThumb}`)
-                img.setAttribute("alt", 'Meal')
-                img.classList.add("image")
-                div.append(span)
-                div.append(img)
-                listSlideContainer.append(div)
-            }
+            img.setAttribute("src", `${meal.meals[0].strMealThumb}`)
+            img.setAttribute("alt", 'Meal')
+            img.classList.add("image")
+            div.append(span)
+            div.append(img)
+            listSlideContainer.append(div)
             span.setAttribute("onclick", `favIconAni(${span.parentElement.id.charAt(span.parentElement.id.length - 1)})`)
         })
-        .catch(e => {
-            console.warn(e);
-        });
+    }).catch(e => {
+        console.warn(e);
+    });
 }
 
 function addLi(meal) {
@@ -153,27 +228,10 @@ function addLi(meal) {
     }
 }
 
-function removeLi() {
+function removeUl() {
     while (favUl.firstChild) {
         favUl.removeChild(favUl.firstChild)
     }
-}
-
-function closeEvent(e) {
-    if (e.key === "Escape") {
-        toDefault()
-    }
-}
-
-function toDefault() {
-    mealContainer.innerHTML = ''
-    mealContainer.style.opacity = "0"
-    listSlideContainer.style.filter = "none"
-    listSlideContainer.style.pointerEvents = "initial"
-    listSlideContainer.style.userSelect = "initial"
-    listSlideH2.style.filter = "none"
-    listSlideH2.style.pointerEvents = "initial"
-    listSlideH2.style.userSelect = "initial"
 }
 
 function createMeal(meal) {
@@ -224,14 +282,18 @@ function createMeal(meal) {
                  ${
         meal.strYoutube
             ? `
-                        <div class="video-div">
-                            <h4>Video Recipe</h4>
-                                <div class="videoWrapper" style=" width: 12rem">
-                                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/${meal.strYoutube.slice(-11)}"></iframe>
-                                </div>
-                        </div>
-                        `
-            : ''
+                <div class="video-div">
+                    <h4>Video Recipe</h4>
+                    <div class="videoWrapper" style=" width: 12rem">
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/${meal.strYoutube.slice(-11)}"></iframe>
+                    </div>
+                </div>
+            `
+            : `
+                <div class="video-div">
+                    <h4>No Video Found</h4>
+                </div>
+            `
     }
     		</div>
     	</div>
@@ -239,6 +301,15 @@ function createMeal(meal) {
     `;
     mealContainer.innerHTML = newInnerHTML;
     mealContainer.style.opacity = "1"
+    mealContainer.style.opacity = "1"
+
+    let youtubeDiv = document.querySelector(".video-div div")
+    let description = document.querySelector(".description p")
+    if (!youtubeDiv) {
+        description.style.maxHeight = "20rem"
+    }
+    document.getElementById("menu").style.pointerEvents = "none"
+    document.getElementById("menu").style.userSelect = "none"
 }
 
 function saveFavMealsID() {
@@ -250,8 +321,8 @@ function showFavMealsID() {
 }
 
 function favIconAni(id) {
-    document.querySelector( `#divList${id} #fav`).classList.add("fav-icon-ani-class")
+    document.querySelector(`#divList${id} #fav`).classList.add("fav-icon-ani-class")
     setTimeout(() => {
-        document.querySelector( `#divList${id} #fav`).classList.remove("fav-icon-ani-class")
+        document.querySelector(`#divList${id} #fav`).classList.remove("fav-icon-ani-class")
     }, 150)
 }
