@@ -404,6 +404,10 @@ strong {
     overflow-y: auto;
 }
 
+.meal-description p {
+    max-height: 12.5rem;
+}
+
 .video-div {
     margin-top: 0.5rem;
     display: flex;
@@ -540,6 +544,10 @@ strong {
 
     .meal-description p, .info-div ul {
         max-height: 15rem;
+    }
+
+    .video-div h4 {
+        font-size: 2rem;
     }
 }
 
