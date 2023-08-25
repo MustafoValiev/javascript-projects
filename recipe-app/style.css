@@ -49,16 +49,33 @@ i {
 #search, #menu {
     margin: auto 0;
     height: fit-content;
-    background: -webkit-linear-gradient(#3fb8af, #26a495);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #3fb8af;
     cursor: pointer;
     display: flex;
     align-items: center;
 }
 
-.fa-magnifying-glass {
-    line-height: initial;
+#search {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+#search-text {
+    width: 0;
+    border: none;
+    outline: none;
+    opacity: 0;
+}
+
+.search-text-open {
+    font-size: 1rem;
+    outline: 0.1rem solid #26a495 !important;
+    width: 8rem !important;
+    opacity: 1 !important;
+    border: 0.1rem solid #26a495 !important;
+    color: #3fb8af;
+    border-radius: 1rem;
+    padding: 0 0.3rem;
 }
 
 header {
@@ -84,11 +101,6 @@ header h1 {
     -webkit-text-fill-color: transparent;
 }
 
-/*.change-position-h1 {*/
-/*    transform: translateX(5rem);*/
-/*    transition: 0.5s;*/
-/*}*/
-
 aside {
     position: absolute;
     transform: translate(calc(-100% - 2.5rem), 4rem);
@@ -100,7 +112,7 @@ aside {
     z-index: 10;
 }
 
-aside > div{
+aside > div {
     width: 33rem;
     height: calc(90vh - 6rem);
     overflow-y: auto;
@@ -131,6 +143,7 @@ aside > div{
 
 .width-changer {
     width: calc(100% - 0.62rem) !important;
+    transition: all 0s;
 }
 
 #fav-ul {
@@ -361,6 +374,7 @@ strong {
     color: #3960d0;
     margin: -0.5rem 0 1rem;
     text-align: center;
+    line-height: 1.5rem;
 }
 
 .info-div {
@@ -369,7 +383,6 @@ strong {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    justify-content: space-between;
 }
 
 .info-div img {
@@ -379,13 +392,6 @@ strong {
 
 .info-div div h4 {
     color: #1dcd06;
-}
-
-#brief-desc {
-}
-
-#ingredients {
-    margin-bottom: 6rem;
 }
 
 .meal-description {
@@ -398,13 +404,14 @@ strong {
 }
 
 .meal-description p, .info-div ul {
-    max-height: 9.5rem;
+    max-height: 12.5rem;
     overflow: scroll;
     overflow-x: hidden;
     overflow-y: auto;
 }
 
 .meal-description p {
+    padding-right: 0.5rem;
     max-height: 12.5rem;
 }
 
@@ -497,7 +504,7 @@ strong {
 }
 
 ::-webkit-scrollbar-track {
-    background: #3fb8af ;
+    background: #3fb8af;
     border-radius: 0.625rem;
 }
 
@@ -520,7 +527,7 @@ strong {
 
 
 @media screen and (max-width: 1156px) {
-    :root{
+    :root {
         font-size: 14px;
     }
 
@@ -543,16 +550,24 @@ strong {
     }
 
     .meal-description p, .info-div ul {
-        max-height: 15rem;
+        max-height: 11.5rem;
+    }
+
+    .meal-description p {
+        max-height: 17rem;
     }
 
     .video-div h4 {
         font-size: 2rem;
     }
+
+    .search-text-open {
+        width: 7rem !important;
+    }
 }
 
 @media screen and (max-width: 710px) {
-    :root{
+    :root {
         font-size: 13px;
     }
 
@@ -560,10 +575,19 @@ strong {
         font-size: 1.1rem;
         max-width: 35rem;
     }
+
+    .videoWrapper {
+        width: 10rem;
+        height: 8rem;
+    }
+
+    .search-text-open {
+        width: 6rem !important;
+    }
 }
 
 @media screen and (max-width: 590px) {
-    :root{
+    :root {
         font-size: 10px;
     }
 
@@ -583,12 +607,16 @@ strong {
 
     .videoWrapper {
         width: 10rem;
-        height: 10rem; !important;
+        height: 8rem;
+    }
+
+    .search-text-open {
+        width: 6rem !important;
     }
 }
 
 @media screen and (max-width: 440px) {
-    :root{
+    :root {
         font-size: 8px;
     }
 
@@ -599,6 +627,10 @@ strong {
 
     .videoWrapper {
         width: 9rem;
-        height: 9rem;
+        height: 7rem;
+    }
+
+    .search-text-open {
+        width: 4rem !important;
     }
 }
