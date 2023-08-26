@@ -408,10 +408,10 @@ strong {
     overflow: scroll;
     overflow-x: hidden;
     overflow-y: auto;
+    padding-right: 0.5rem;
 }
 
 .meal-description p {
-    padding-right: 0.5rem;
     max-height: 12.5rem;
 }
 
