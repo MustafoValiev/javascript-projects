@@ -1,22 +1,27 @@
 let mealContainer = document.getElementById("meal");
 let listSlideContainer = document.getElementById("list-slide-container")
 let listSlideH2 = document.getElementById("list-slide-h2")
-let headerH1 = document.querySelector(".header h1")
 let mainContainer = document.getElementById("container")
 let favListElement = document.getElementsByTagName("aside")[0]
 let favUl = document.getElementById("fav-ul")
 let favListElementH2 = document.querySelector(".fav-title h2")
 let refreshButton = document.getElementById("refresh-button")
+let searchButton = document.getElementById("search")
+let searchText = document.getElementById("search-text")
+let screenWidth = document.getElementById("wrapper").parentElement.offsetWidth
 let listMeal = []
 let slideContainerWidth = mainContainer.offsetWidth * 0.8
 let favArrayID;
 let isOpen;
+let bool = false
+
 
 // localStorage.clear()
 
 window.onload = () => {
     favArrayID = showFavMealsID() ? showFavMealsID().split(",") : []
     generateMeal()
+    searchButton.children[0].style.lineHeight = "initial"
 }
 
 window.onclick = e => {
@@ -42,6 +47,7 @@ window.onclick = e => {
         }
     }
     if (el.classList.contains("fa-bars")) {
+        let favLength = favArrayID.length
         if (isOpen) {
             let urls = []
             favArrayID.forEach((mealID) => {
@@ -51,7 +57,7 @@ window.onclick = e => {
                 Promise.all(responses.map(res => res.json()))
             ).then(data => {
                 data.forEach((meal) => {
-                    if (favArrayID.length <= favUl.children.length) {
+                    if (favLength < favUl.children.length) {
                         return 0
                     }
                     addLi(meal.meals[0])
@@ -59,13 +65,13 @@ window.onclick = e => {
             }).catch(e => {
                 console.warn(e);
             })
+            changeWidth()
         } else {
             removeUl()
         }
         el.addEventListener('click', function () {
             favListElement.setAttribute('class', isOpen ? 'slide-out' : 'slide-in');
             el.parentElement.setAttribute('class', isOpen ? 'rotate-out' : 'rotate-in');
-            isOpen ? headerH1.classList.remove("change-position-h1") : headerH1.classList.add("change-position-h1");
         });
     }
     let spanCross = document.getElementById("span-cross");
@@ -120,16 +126,71 @@ window.onclick = e => {
                     elem.children[0].classList.add("not-faved")
                 }
             })
+            changeWidth()
+            saveFavMealsID()
         }
     })
     if (el === refreshButton) {
         listMeal = []
-        while(listSlideContainer.firstChild) {
+        while (listSlideContainer.firstChild) {
             listSlideContainer.firstChild.remove()
         }
         generateMeal()
     }
+    if (el === searchButton.children[0]) {
+        screenWidth = document.getElementById("wrapper").parentElement.offsetWidth
+        if (bool) {
+            if (searchText.value) {
+                searchInput()
+            }
+            else {
+                searchButton.style.marginLeft = "0"
+                searchButton.style.gap = "0"
+                searchButton.style.padding = "0"
+                closeSearchText()
+            }
+            bool = !bool
+        } else {
+            if (screenWidth <= 440) {
+                searchButton.style.marginLeft = "-5.1rem"
+            } else if (screenWidth <= 590) {
+                searchButton.style.marginLeft = "-7.1rem"
+            } else if (screenWidth <= 710) {
+                searchButton.style.marginLeft = "-7.1rem"
+            } else if (screenWidth <= 1156) {
+                searchButton.style.marginLeft = "-8.1rem"
+            } else {
+                searchButton.style.marginLeft = "-9.1rem"
+            }
+            searchButton.style.gap = "0.6rem"
+            searchButton.style.padding = "0.5rem 0 0.5rem 0.5rem"
+            showSearchText()
+            searchText.focus()
+            bool = !bool
+        }
+    } else {
+        if (el === searchText || searchText.value   ) {
+            return 0
+        }
+        searchButton.style.marginLeft = "0"
+        closeSearchText()
+        bool = false
+    }
+}
 
+function searchInput() {
+    if (searchText.value) {
+        fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${searchText.value}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.meals === null) {
+                    alert(`Meal "${searchText.value}" not found`)
+                } else createMeal(data.meals[0])
+            })
+            .catch(e => {
+                console.warn(e)
+            })
+    }
 }
 
 function generateMeal() {
@@ -206,7 +267,11 @@ function addLi(meal) {
             <span id="ul-span-cross">✕</span>
             `
     favUl.append(li)
-    if (favUl.children.length >= 3) {
+    changeWidth()
+}
+
+function changeWidth() {
+    if (favUl.children.length > 3) {
         favListElementH2.classList.add("width-changer")
     } else {
         favListElementH2.classList.remove("width-changer")
@@ -287,12 +352,38 @@ function createMeal(meal) {
     if (!youtubeDiv) {
         description.style.maxHeight = "20rem"
     }
+    if (screenWidth <= 1156) {
+        if (!youtubeDiv) {
+            description.style.maxHeight = "27rem"
+        }
+    }
+    if (screenWidth <= 710) {
+        if (!youtubeDiv) {
+            description.style.maxHeight = "23rem"
+        }
+    }
+    if (screenWidth <= 440) {
+        if (!youtubeDiv) {
+            description.style.maxHeight = "21rem"
+        }
+    }
     document.getElementById("menu").style.pointerEvents = "none"
     document.getElementById("menu").style.userSelect = "none"
 }
 
 window.onkeydown = e => {
     closeEvent(e)
+    if ((e.key === "Enter") && (window.getComputedStyle(searchText).getPropertyValue("opacity") === "1")) {
+        searchInput()
+    }
+}
+
+function showSearchText() {
+    searchText.classList.add("search-text-open")
+}
+
+function closeSearchText() {
+    searchText.classList.remove("search-text-open")
 }
 
 function closeEvent(e) {

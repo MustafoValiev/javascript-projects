@@ -1,0 +1,315 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Calibri, sans-serif;;
+    box-sizing: border-box;
+    user-select: none;
+    transition: all 0.25s;
+}
+
+*:hover {
+    user-select: none;
+    transition: all 0.15s;
+}
+
+:root {
+    font-size: 20px;
+}
+
+.container {
+    position: absolute;
+    min-width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgb(54, 87, 213), rgba(199, 38, 105, 0.9));
+}
+
+.todo-app {
+    max-width: 100vh;
+    width: 60%;
+    background: #ffffff;
+    margin: 5rem auto 1rem;
+    padding: 2rem 1.2rem 2.5rem;
+    border-radius: 0.5rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0.25rem;
+}
+
+#delete-all {
+    font-size: 1.8rem;
+    position: relative;
+    bottom: -2.5rem;
+    left: 108%;
+    color: #831818;
+    cursor: pointer;
+    background: #fff;
+    padding: 0.75rem;
+    border-radius: 50%;
+}
+
+#delete-all:hover::after {
+    font-size: 0.6rem;
+    color: crimson;
+    content: attr(data-title);
+    padding: 0.25rem;
+    border: 0.05rem solid #000;
+    position: absolute;
+    bottom: 3rem;
+    left: -0.5rem;
+    background: rgb(255, 255, 255);
+    border-radius: 1.25rem;
+}
+
+.todo-app h2 {
+    color: #1b67e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+}
+
+.todo-app h2 i {
+    font-size: 2rem;
+    width: 2.25rem;
+    margin-left: 0.5rem;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;;
+    background: #b2b7c6;
+    border-radius: 1.5rem;
+    padding-left: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+::placeholder {
+    color: rgba(1, 0, 0, 0.33);
+    opacity: 1;
+}
+
+input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding-left: 0.5rem;
+    font-size: 1.2rem;
+    width: 1rem;
+}
+
+
+button {
+    border: none;
+    outline: none;
+    margin-left: 0.25rem;
+    padding: 0.8rem 2.5rem;
+    background: crimson;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-radius: 2rem;
+}
+
+.row-buttons {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: center;
+}
+
+.row-buttons span {
+    height: fit-content;
+    margin: 0 0.3rem 0 0.5rem;
+    cursor: pointer;
+}
+
+ul {
+    word-wrap: break-word;
+}
+
+ul li {
+    list-style: none;
+    font-size: 1.1rem;
+    padding: 0.6rem 2.5rem 0.6rem 2rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+#spanCheck {
+    cursor: pointer;
+    position: absolute;
+    left: 0;
+    top: 0.8rem;
+    width: fit-content;
+    aspect-ratio: 1;
+    font-size: 1.25rem;
+    line-height: 2rem;
+    text-align: center;
+    border-radius: 50%;
+}
+
+.fa-edit {
+    color: #003289;
+}
+
+#pText {
+    padding: 0.4rem 0.9rem 0.5rem 0.5rem;
+}
+
+ul li:hover{
+    color: #29e052;
+}
+
+ul li:hover .spanRemove {
+    color: #000;
+}
+
+.fa-edit {
+    cursor: pointer;
+}
+
+.toRed {
+    color: #c71111;
+}
+
+.toRed:hover {
+    color: #c71111;
+}
+
+ul li .fa-edit:hover{
+    color: #008eff;
+}
+
+ul li i.toRed:hover{
+    color: #c71111;
+}
+
+ul li.checked .fa-edit{
+    cursor: initial;
+}
+
+ul li.checked .spanRemove{
+    color: #000;
+}
+
+ul li.checked {
+    color: #768078;
+    text-decoration: line-through;
+}
+
+ul li.checked:hover .spanRemove {
+    color: #000000;
+}
+
+ul li.checked:hover {
+    color: #768078;
+}
+
+ul li.checked > p:hover{
+    color: #768078;
+}
+
+.list-container{
+    display: flex;
+    align-items: center;
+
+}
+
+ul li .spanRemove {
+    position: absolute;
+    right: 0;
+    top: 0.6rem;
+    width: 2rem;
+    aspect-ratio: 1;
+    font-size: 1.25rem;
+    line-height: 2rem;
+    text-align: center;
+    border-radius: 50%;
+}
+
+ul li .spanRemove:hover {
+    background: #edeef0;
+    cursor: pointer;
+    color: #f80101;
+}
+
+ul li.checked .spanRemove:hover {
+    color: #f80101;
+}
+
+.onEdit {
+    color: #1488d8;
+}
+
+.onEdit:hover{
+    color: #1488d8;
+}
+
+#spanEdit {
+    position: absolute;
+    top: 0.4rem;
+    right: 2.1rem;
+}
+
+@media screen and (max-width: 1380px) {
+    :root {
+        font-size: 16px;
+    }
+
+    .todo-app {
+        width: 65%;
+    }
+}
+
+@media screen and (max-width: 780px) {
+    :root {
+        font-size: 12px;
+    }
+
+    .todo-app {
+        width: 60%;
+    }
+}
+
+
+@media screen and (max-width: 520px) {
+    :root {
+        font-size: 16px;
+    }
+
+    .todo-app {
+        width: 75%;
+    }
+
+    input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        padding-left: 0.4rem;
+        font-size: 1rem;
+    }
+
+    button {
+        border: none;
+        outline: none;
+        margin-left: 0.25rem;
+        padding: 0.6rem 1.2rem;
+        background: crimson;
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        border-radius: 2rem;
+    }
+}
+
